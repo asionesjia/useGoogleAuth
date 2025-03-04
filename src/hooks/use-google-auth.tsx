@@ -50,7 +50,7 @@ export const useGoogleAuth = () => {
           context: 'signin',
           providers: [{
             configURL: 'https://accounts.google.com/gsi/fedcm.json',
-            clientId: process.env.GOOGLE_CLIENT_ID || '',
+            clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
             mode: 'active',
             params: { nonce }
           }]
@@ -76,7 +76,7 @@ export const useGoogleAuth = () => {
     script.async = true;
     script.onload = () => {
       window.google?.accounts.id.initialize({
-        client_id: process.env.GOOGLE_CLIENT_ID || '',
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
         callback: (response: CredentialResponse) => {
           setToken(response.credential);
           setError(null);
@@ -90,8 +90,9 @@ export const useGoogleAuth = () => {
   };
 
   const signInWithOAuth = () => {
-    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=token&scope=email profile`;
+    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI}&response_type=token&scope=email profile&prompt=consent`;
   };
 
   return { token, error, signInWithOAuth, isFedCMAvailable };
 };
+
