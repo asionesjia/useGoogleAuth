@@ -32,7 +32,14 @@ export const useGoogleAuth = () => {
   const [isFedCMAvailable, setIsFedCMAvailable] = useState<boolean>(false);
 
   useEffect(() => {
-    if ('IdentityCredential' in window) {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("access_token");
+
+    if(accessToken) {
+      setToken(accessToken);
+      setError(null);
+    }
+    if ('IdentityCredential' in window && accessToken) {
       setIsFedCMAvailable(true);
       authenticateWithFedCM();
     } else {
