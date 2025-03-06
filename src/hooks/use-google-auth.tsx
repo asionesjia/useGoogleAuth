@@ -51,7 +51,8 @@ export const useGoogleAuth = () => {
   const [isOneTapAvailable, setIsOneTapAvailable] = useState<boolean>(false);
   const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] =
     useState<boolean>(false);
-  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
+  const [isFedCMAuthenticating, setIsFedCMAuthenticating] =
+    useState<boolean>(false);
 
   // Load Google script and check for access token from OAuth redirect
   useEffect(() => {
@@ -82,7 +83,7 @@ export const useGoogleAuth = () => {
 
   // Handle authentication logic
   useEffect(() => {
-    if (!isGoogleScriptLoaded || isAuthenticating || token) {
+    if (!isGoogleScriptLoaded || isFedCMAuthenticating || token) {
       return;
     }
 
@@ -99,13 +100,13 @@ export const useGoogleAuth = () => {
     } else {
       setError('FedCM and One Tap unavailable, please use OAuth');
     }
-  }, [isGoogleScriptLoaded, isAuthenticating, token]);
+  }, [isGoogleScriptLoaded, isFedCMAuthenticating, token]);
 
   const authenticateWithFedCM = async () => {
-    if (isAuthenticating) {
+    if (isFedCMAuthenticating) {
       return;
     }
-    setIsAuthenticating(true);
+    setIsFedCMAuthenticating(true);
 
     try {
       const nonce =
@@ -144,12 +145,12 @@ export const useGoogleAuth = () => {
         setError(`FedCM authentication error: ${error.message}`);
       }
     } finally {
-      setIsAuthenticating(false);
+      setIsFedCMAuthenticating(false);
     }
   };
 
   const initializeGoogleOneTap = () => {
-    if (!window.google?.accounts?.id || isAuthenticating) {
+    if (!window.google?.accounts?.id || isFedCMAuthenticating) {
       return;
     }
 
@@ -177,5 +178,6 @@ export const useGoogleAuth = () => {
     isFedCMAvailable,
     isOneTapAvailable,
     isGoogleScriptLoaded,
+    isFedCMAuthenticating,
   };
 };

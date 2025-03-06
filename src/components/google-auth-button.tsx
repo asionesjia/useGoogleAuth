@@ -11,6 +11,7 @@ const GoogleAuthButton = () => {
     isFedCMAvailable,
     isOneTapAvailable,
     isGoogleScriptLoaded,
+    isFedCMAuthenticating,
   } = useGoogleAuth();
 
   return (
@@ -66,8 +67,9 @@ const GoogleAuthButton = () => {
       >
         {token ? 'Logged in' : 'Sign in with Google Oauth'}
       </button>
+      {isFedCMAuthenticating && <p>The FedCM is authenticating...</p>}
       {error && (
-        <p className="pt-2.5 font-medium font-sm text-red-700">{`Error: ${error}`}</p>
+        <p className="pt-2.5 font-medium font-sm text-red-700">{error}</p>
       )}
     </div>
   );
