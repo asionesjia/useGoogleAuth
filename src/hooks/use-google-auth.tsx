@@ -38,7 +38,9 @@ const isFedCMSupported = () => {
 const isOneTapSupported = () => {
   return (
     typeof window !== "undefined" &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (window as any).google !== "undefined" &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (window as any).google.accounts !== "undefined"
   );
 };
