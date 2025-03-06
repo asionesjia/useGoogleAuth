@@ -15,8 +15,8 @@ const GoogleAuthButton = () => {
             )}>FedCM</span>
           <span className={cn("text-nowrap bg-black/[.05] dark:bg-white/[.06] px-2 py-0.5 rounded font-semibold",
             isFedCMAvailable ? 'text-foreground' : isOneTapAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700',
-            isGoogleScriptLoaded && 'bg-black/[.05] dark:bg-white/[.06] text-foreground'
-          )}>{isGoogleScriptLoaded ? 'One Tap is Loading...' : 'One Tap'}</span>
+            !isGoogleScriptLoaded && 'bg-black/[.05] dark:bg-white/[.06] text-foreground'
+          )}>{isGoogleScriptLoaded ? 'One Tap' : 'One Tap is Loading...'}</span>
           <span className={cn("bg-green-100 text-green-700 px-2 py-0.5 rounded font-semibold")}>Oauth</span>
         </div>
           <button
