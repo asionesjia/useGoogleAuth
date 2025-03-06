@@ -26,10 +26,28 @@ declare global {
   }
 }
 
+const isFedCMSupported = () => {
+  return (
+    typeof window !== "undefined" &&
+    "IdentityCredential" in window &&
+    "navigator" in window &&
+    "credentials" in navigator
+  );
+};
+
+const isOneTapSupported = () => {
+  return (
+    typeof window !== "undefined" &&
+    typeof (window as any).google !== "undefined" &&
+    typeof (window as any).google.accounts !== "undefined"
+  );
+};
+
 export const useGoogleAuth = () => {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isFedCMAvailable, setIsFedCMAvailable] = useState<boolean>(false);
+  const [isOneTapAvailable, setIsOneTapAvailable] = useState<boolean>(false);
 
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -39,11 +57,12 @@ export const useGoogleAuth = () => {
       setToken(accessToken);
       setError(null);
     }
-    if ('IdentityCredential' in window && accessToken) {
+    if (isFedCMSupported() && !accessToken) {
       setIsFedCMAvailable(true);
       authenticateWithFedCM();
-    } else {
-      setIsFedCMAvailable(false);
+    }
+    if(isOneTapSupported() && !accessToken) {
+      setIsOneTapAvailable(true);
       initializeGoogleOneTap();
     }
   }, []);
@@ -100,6 +119,6 @@ export const useGoogleAuth = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI}&response_type=token&scope=email profile&prompt=consent`;
   };
 
-  return { token, error, signInWithOAuth, isFedCMAvailable };
+  return { token, error, signInWithOAuth, isFedCMAvailable, isOneTapAvailable };
 };
 
