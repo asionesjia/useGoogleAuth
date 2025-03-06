@@ -4,13 +4,12 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <div
-      className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-8 sm:items-start">
+      className="flex min-h-screen flex-col items-center justify-between justify-items-center p-8 font-[family-name:var(--font-geist-sans)] sm:p-20 md:grid md:grid-rows-[20px_1fr_20px] md:gap-16">
+      <main className="row-start-2 flex flex-col items-start gap-8">
         <code className="rounded bg-black/[.05] px-1 py-0.5 font-bold dark:bg-white/[.06]">
           <h1 className="text-3xl">useGoogleAuth</h1>
         </code>
-        <ol
-          className="list-inside list-decimal text-center font-[family-name:var(--font-geist-mono)] text-sm sm:text-left">
+        <ol className="list-inside list-decimal text-left font-[family-name:var(--font-geist-mono)] text-sm">
           <li
             className="mb-2 w-full text-wrap md:w-[calc(80vw)] lg:w-[calc(70vw)] xl:w-[calc(60vw)] 2xl:w-[calc(50vw)]">
             If your browser supports{' '}
@@ -33,6 +32,55 @@ export default function Home() {
             className="mb-2 w-full text-wrap md:w-[calc(80vw)] lg:w-[calc(70vw)] xl:w-[calc(60vw)] 2xl:w-[calc(50vw)]">
             <b>Auto-login is always prioritized,</b> while button clicks default
             to OAuth.
+          </li>
+          <li>
+            You can check this page on different devices and browsers. For
+            example:
+            <ul className="flex items-start gap-2 pt-2.5 pl-4">
+              <li className="block md:hidden">
+                On <strong>IOS Chrome</strong>:
+                <ul className="list-inside list-disc pt-2">
+                  <li>
+                    <span>FedCM is not supported.(Red)</span>
+                  </li>
+                  <li>
+                    <span>One Tap is supported and enabled.(Green)</span>
+                  </li>
+                  <li>
+                    <span>
+                      OAuth is supported and enabled by default.(Green)
+                    </span>
+                  </li>
+                </ul>
+              </li>
+              <li className="hidden md:block">
+                On <strong>PC/Mac Chrome</strong>:
+                <ul className="list-inside list-disc pt-2">
+                  <li>
+                    <span>FedCM is supported.(Green)</span>
+                  </li>
+                  <li>
+                    <span>One Tap is supported but not enabled.(Gray)</span>
+                  </li>
+                  <li>
+                    <span>
+                      OAuth is supported and enabled by default.(Green)
+                    </span>
+                  </li>
+                </ul>
+              </li>
+              <li className="hidden md:block">
+                On <strong>Mac Safari</strong>:
+                <ul className="list-inside list-disc pt-2">
+                  <li>
+                    <span>FedCM is not supported.(Red)</span>
+                  </li>
+                  <li>
+                    <span>One Tap is supported and enabled.(Green)</span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </li>
         </ol>
 
