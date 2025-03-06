@@ -26,8 +26,8 @@ const GoogleAuthButton = () => {
               className={cn(
                 'rounded bg-black/[.05] px-2 py-0.5 font-semibold dark:bg-white/[.06]',
                 isFedCMAvailable
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-red-100 text-red-700'
+                  ? 'bg-green-100 text-green-700 dark:bg-green-100'
+                  : 'bg-red-100 text-red-700 dark:bg-red-100'
               )}
             >
               FedCM
@@ -37,12 +37,12 @@ const GoogleAuthButton = () => {
                 'text-nowrap rounded bg-black/[.05] px-2 py-0.5 font-semibold dark:bg-white/[.06]',
                 (() => {
                   if (isFedCMAvailable) {
-                    return 'text-foreground';
+                    return '';
                   }
                   if (isOneTapAvailable) {
-                    return 'bg-green-100 text-green-700';
+                    return 'bg-green-100 text-green-700 dark:bg-green-100';
                   }
-                  return 'bg-red-100 text-red-700';
+                  return 'bg-red-100 text-red-700 dark:bg-red-100';
                 })()
               )}
             >
@@ -50,7 +50,7 @@ const GoogleAuthButton = () => {
             </span>
             <span
               className={cn(
-                'rounded bg-green-100 px-2 py-0.5 font-semibold text-green-700'
+                'rounded bg-green-100 px-2 py-0.5 font-semibold text-green-700 dark:bg-green-100'
               )}
             >
               Oauth
