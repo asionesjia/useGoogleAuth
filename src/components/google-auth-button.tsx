@@ -4,7 +4,7 @@ import {useGoogleAuth} from "@/hooks/use-google-auth";
 import {cn} from "@/lib/utils";
 
 const GoogleAuthButton = () => {
-    const { token, error, signInWithOAuth, isFedCMAvailable, isOneTapAvailable } = useGoogleAuth();
+    const { token, error, signInWithOAuth, isFedCMAvailable, isOneTapAvailable, isGoogleScriptLoaded } = useGoogleAuth();
 
     return (
       <div className="flex flex-col items-start justify-centers">
@@ -14,8 +14,9 @@ const GoogleAuthButton = () => {
             isFedCMAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
             )}>FedCM</span>
           <span className={cn("text-nowrap bg-black/[.05] dark:bg-white/[.06] px-2 py-0.5 rounded font-semibold",
-            isOneTapAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-          )}>One Tap</span>
+            isFedCMAvailable ? 'text-foreground' : isOneTapAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700',
+            isGoogleScriptLoaded && 'bg-black/[.05] dark:bg-white/[.06] text-foreground'
+          )}>{isGoogleScriptLoaded ? 'One Tap is Loading...' : 'One Tap'}</span>
           <span className={cn("bg-green-100 text-green-700 px-2 py-0.5 rounded font-semibold")}>Oauth</span>
         </div>
           <button
