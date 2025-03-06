@@ -64,16 +64,11 @@ const GoogleAuthButton = () => {
         onClick={signInWithOAuth}
         className="flex h-10 items-center justify-start gap-2 rounded-full border border-transparent border-solid bg-foreground px-4 text-background text-sm transition-colors hover:bg-[#383838] sm:h-12 sm:px-5 sm:text-base dark:hover:bg-[#ccc]"
       >
-        {(() => {
-          if (error) {
-            return `Error: ${error}`;
-          }
-          if (token) {
-            return 'Logged in';
-          }
-          return 'Sign in with Google Oauth';
-        })()}
+        {token ? 'Logged in' : 'Sign in with Google Oauth'}
       </button>
+      {error && (
+        <p className="pt-2.5 font-medium font-sm text-red-700">{`Error: ${error}`}</p>
+      )}
     </div>
   );
 };
