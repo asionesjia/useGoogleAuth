@@ -8,12 +8,12 @@ const GoogleAuthButton = () => {
 
     return (
       <div className="flex flex-col items-start justify-centers">
-        <div className="flex gap-4 items-center justify-start text-sm pb-8">
+        <div className="flex gap-2 md:gap-4 items-center justify-start text-sm pb-8">
           <span className="text-black/[.5] dark:text-white/[.5] font-medium">Current Availability:</span>
           <span className={cn("bg-black/[.05] dark:bg-white/[.06] px-2 py-0.5 rounded font-semibold",
             isFedCMAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
             )}>FedCM</span>
-          <span className={cn("bg-black/[.05] dark:bg-white/[.06] px-2 py-0.5 rounded font-semibold",
+          <span className={cn("text-nowrap bg-black/[.05] dark:bg-white/[.06] px-2 py-0.5 rounded font-semibold",
             isOneTapAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
           )}>One Tap</span>
           <span className={cn("bg-green-100 text-green-700 px-2 py-0.5 rounded font-semibold")}>Oauth</span>
