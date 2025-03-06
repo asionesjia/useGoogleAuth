@@ -53,6 +53,8 @@ export const useGoogleAuth = () => {
     useState<boolean>(false);
   const [isFedCMAuthenticating, setIsFedCMAuthenticating] =
     useState<boolean>(false);
+  const [hasAttemptedAutoLogin, setHasAttemptedAutoLogin] =
+    useState<boolean>(false); // New flag
 
   // Load Google script and check for access token from OAuth redirect
   useEffect(() => {
@@ -81,9 +83,14 @@ export const useGoogleAuth = () => {
     };
   }, []);
 
-  // Handle authentication logic
+  // Handle authentication logic (only attempt once)
   useEffect(() => {
-    if (!isGoogleScriptLoaded || isFedCMAuthenticating || token) {
+    if (
+      !isGoogleScriptLoaded ||
+      isFedCMAuthenticating ||
+      token ||
+      hasAttemptedAutoLogin // Prevent retry after first attempt
+    ) {
       return;
     }
 
@@ -99,8 +106,14 @@ export const useGoogleAuth = () => {
       initializeGoogleOneTap();
     } else {
       setError('FedCM and One Tap unavailable, please use OAuth');
+      setHasAttemptedAutoLogin(true); // Mark attempt as done even if no methods are available
     }
-  }, [isGoogleScriptLoaded, isFedCMAuthenticating, token]);
+  }, [
+    isGoogleScriptLoaded,
+    isFedCMAuthenticating,
+    token,
+    hasAttemptedAutoLogin,
+  ]);
 
   const authenticateWithFedCM = async () => {
     if (isFedCMAuthenticating) {
@@ -146,6 +159,7 @@ export const useGoogleAuth = () => {
       }
     } finally {
       setIsFedCMAuthenticating(false);
+      setHasAttemptedAutoLogin(true); // Mark attempt as done
     }
   };
 
@@ -165,6 +179,7 @@ export const useGoogleAuth = () => {
     });
 
     window.google.accounts.id.prompt();
+    setHasAttemptedAutoLogin(true); // Mark attempt as done after prompting
   };
 
   const signInWithOAuth = () => {
@@ -179,5 +194,6 @@ export const useGoogleAuth = () => {
     isOneTapAvailable,
     isGoogleScriptLoaded,
     isFedCMAuthenticating,
+    hasAttemptedAutoLogin, // Expose for debugging if needed
   };
 };
