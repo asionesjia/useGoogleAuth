@@ -67,7 +67,11 @@ const GoogleAuthButton = () => {
       >
         {token ? 'Logged in' : 'Sign in with Google Oauth'}
       </button>
-      {isFedCMAuthenticating && <p>The FedCM is authenticating...</p>}
+      {isFedCMAuthenticating && (
+        <p className="pt-2.5 font-medium font-sm text-black/[.5] dark:text-white/[.5]">
+          The FedCM is authenticating...
+        </p>
+      )}
       {error && (
         <p className="pt-2.5 font-medium font-sm text-red-700">{error}</p>
       )}
