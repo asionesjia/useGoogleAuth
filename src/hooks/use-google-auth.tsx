@@ -26,7 +26,7 @@ declare global {
   }
 }
 
-const isFedCMSupported = () => {
+const isFedCMSupported = (): boolean => {
   return (
     typeof window !== "undefined" &&
     "IdentityCredential" in window &&
@@ -35,13 +35,10 @@ const isFedCMSupported = () => {
   );
 };
 
-const isOneTapSupported = () => {
+const isOneTapSupported = (): boolean => {
   return (
     typeof window !== "undefined" &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    typeof (window as any).google !== "undefined" &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    typeof (window as any).google.accounts !== "undefined"
+    !!window.google?.accounts?.id
   );
 };
 
@@ -50,24 +47,40 @@ export const useGoogleAuth = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFedCMAvailable, setIsFedCMAvailable] = useState<boolean>(false);
   const [isOneTapAvailable, setIsOneTapAvailable] = useState<boolean>(false);
+  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = hashParams.get("access_token");
 
-    if(accessToken) {
+    if (accessToken) {
       setToken(accessToken);
       setError(null);
+      return;
     }
-    if (isFedCMSupported() && !accessToken) {
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.onload = () => {
+      setIsGoogleScriptLoaded(true);
+    };
+    document.body.appendChild(script);
+  }, []);
+
+  useEffect(() => {
+    if (!isGoogleScriptLoaded) return;
+
+    if (isFedCMSupported()) {
       setIsFedCMAvailable(true);
       authenticateWithFedCM();
     }
-    if(isOneTapSupported() && !accessToken) {
+
+    if (isOneTapSupported()) {
       setIsOneTapAvailable(true);
       initializeGoogleOneTap();
     }
-  }, []);
+  }, [isGoogleScriptLoaded]);
 
   const authenticateWithFedCM = async () => {
     try {
@@ -75,14 +88,16 @@ export const useGoogleAuth = () => {
 
       const credential = await navigator.credentials.get({
         identity: {
-          context: 'signin',
-          providers: [{
-            configURL: 'https://accounts.google.com/gsi/fedcm.json',
-            clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-            mode: 'active',
-            params: { nonce }
-          }]
-        }
+          context: "signin",
+          providers: [
+            {
+              configURL: "https://accounts.google.com/gsi/fedcm.json",
+              clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+              mode: "active",
+              params: { nonce },
+            },
+          ],
+        },
       } as never) as FedCMCredential | null;
 
       if (credential?.idToken) {
@@ -92,29 +107,25 @@ export const useGoogleAuth = () => {
         setError("Failed to retrieve FedCM credential");
       }
     } catch (err) {
-      console.log(err)
+      console.error(err);
       setError("Error during FedCM authentication");
     }
   };
 
   const initializeGoogleOneTap = () => {
+    if (!window.google?.accounts?.id) return;
 
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.onload = () => {
-      window.google?.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-        callback: (response: CredentialResponse) => {
-          setToken(response.credential);
-          setError(null);
-        },
-        auto_select: true,
-        cancel_on_tap_outside: false,
-      });
-      window.google?.accounts.id.prompt();
-    };
-    document.body.appendChild(script);
+    window.google.accounts.id.initialize({
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+      callback: (response: CredentialResponse) => {
+        setToken(response.credential);
+        setError(null);
+      },
+      auto_select: true,
+      cancel_on_tap_outside: false,
+    });
+
+    window.google.accounts.id.prompt();
   };
 
   const signInWithOAuth = () => {
@@ -123,4 +134,3 @@ export const useGoogleAuth = () => {
 
   return { token, error, signInWithOAuth, isFedCMAvailable, isOneTapAvailable };
 };
-
