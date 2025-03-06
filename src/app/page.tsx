@@ -4,7 +4,7 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <div
-      className="flex min-h-screen flex-col items-center justify-between justify-items-center p-8 font-[family-name:var(--font-geist-sans)] sm:p-20 md:grid md:grid-rows-[20px_1fr_20px] md:gap-16">
+      className="flex min-h-screen flex-col items-center justify-between justify-items-center p-8 font-[family-name:var(--font-geist-sans)] sm:p-20 md:grid md:grid-rows-[20px_1fr_20px] md:justify-center md:gap-16">
       <main className="row-start-2 flex flex-col items-start gap-8">
         <code className="rounded bg-black/[.05] px-1 py-0.5 font-bold dark:bg-white/[.06]">
           <h1 className="text-3xl">useGoogleAuth</h1>
