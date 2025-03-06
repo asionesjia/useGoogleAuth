@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from 'react';
 
 interface CredentialResponse {
   credential: string;
@@ -28,18 +28,15 @@ declare global {
 
 const isFedCMSupported = (): boolean => {
   return (
-    typeof window !== "undefined" &&
-    "IdentityCredential" in window &&
-    "navigator" in window &&
-    "credentials" in navigator
+    typeof window !== 'undefined' &&
+    'IdentityCredential' in window &&
+    'navigator' in window &&
+    'credentials' in navigator
   );
 };
 
 const isOneTapSupported = (): boolean => {
-  return (
-    typeof window !== "undefined" &&
-    !!window.google?.accounts?.id
-  );
+  return typeof window !== 'undefined' && !!window.google?.accounts?.id;
 };
 
 export const useGoogleAuth = () => {
@@ -47,11 +44,12 @@ export const useGoogleAuth = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFedCMAvailable, setIsFedCMAvailable] = useState<boolean>(false);
   const [isOneTapAvailable, setIsOneTapAvailable] = useState<boolean>(false);
-  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState<boolean>(false);
+  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get("access_token");
+    const accessToken = hashParams.get('access_token');
 
     if (accessToken) {
       setToken(accessToken);
@@ -59,8 +57,8 @@ export const useGoogleAuth = () => {
       return;
     }
 
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.onload = () => {
       setIsGoogleScriptLoaded(true);
@@ -69,7 +67,9 @@ export const useGoogleAuth = () => {
   }, []);
 
   useEffect(() => {
-    if (!isGoogleScriptLoaded) return;
+    if (!isGoogleScriptLoaded) {
+      return;
+    }
 
     if (isFedCMSupported()) {
       setIsFedCMAvailable(true);
@@ -78,47 +78,49 @@ export const useGoogleAuth = () => {
 
     if (isOneTapSupported()) {
       setIsOneTapAvailable(true);
-      if(!isFedCMAvailable) {
+      if (!isFedCMAvailable) {
         initializeGoogleOneTap();
       }
     }
-  }, [isGoogleScriptLoaded]);
+  }, [isGoogleScriptLoaded, isFedCMAvailable]);
 
   const authenticateWithFedCM = async () => {
     try {
-      const nonce = crypto.randomUUID?.() || Math.random().toString(36).substring(2);
+      const nonce =
+        crypto.randomUUID?.() || Math.random().toString(36).substring(2);
 
-      const credential = await navigator.credentials.get({
+      const credential = (await navigator.credentials.get({
         identity: {
-          context: "signin",
+          context: 'signin',
           providers: [
             {
-              configURL: "https://accounts.google.com/gsi/fedcm.json",
-              clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
-              mode: "active",
-              params: { nonce },
+              configURL: 'https://accounts.google.com/gsi/fedcm.json',
+              clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
+              mode: 'active',
+              params: {nonce},
             },
           ],
         },
-      } as never) as FedCMCredential | null;
+      } as never)) as FedCMCredential | null;
 
       if (credential?.idToken) {
         setToken(credential.idToken);
         setError(null);
       } else {
-        setError("Failed to retrieve FedCM credential");
+        setError('Failed to retrieve FedCM credential');
       }
-    } catch (err) {
-      console.error(err);
-      setError("Error during FedCM authentication");
+    } catch (_err) {
+      setError('Error during FedCM authentication');
     }
   };
 
   const initializeGoogleOneTap = () => {
-    if (!window.google?.accounts?.id) return;
+    if (!window.google?.accounts?.id) {
+      return;
+    }
 
     window.google.accounts.id.initialize({
-      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
       callback: (response: CredentialResponse) => {
         setToken(response.credential);
         setError(null);
@@ -134,5 +136,12 @@ export const useGoogleAuth = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI}&response_type=token&scope=email profile&prompt=consent`;
   };
 
-  return { token, error, signInWithOAuth, isFedCMAvailable, isOneTapAvailable, isGoogleScriptLoaded };
+  return {
+    token,
+    error,
+    signInWithOAuth,
+    isFedCMAvailable,
+    isOneTapAvailable,
+    isGoogleScriptLoaded,
+  };
 };
