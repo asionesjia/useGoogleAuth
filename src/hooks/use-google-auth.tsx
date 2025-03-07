@@ -5,7 +5,7 @@ interface CredentialResponse {
 }
 
 interface FedCMCredential {
-  idToken: string;
+  token: string;
 }
 
 declare global {
@@ -131,15 +131,15 @@ export const useGoogleAuth = () => {
             {
               configURL: 'https://accounts.google.com/gsi/fedcm.json',
               clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-              mode: 'active',
+              mode: 'passive',
               params: {nonce},
             },
           ],
         },
       } as never)) as FedCMCredential | null;
 
-      if (credential?.idToken) {
-        setToken(credential.idToken);
+      if (credential?.token) {
+        setToken(credential.token);
         setError(null);
       } else {
         setError(
